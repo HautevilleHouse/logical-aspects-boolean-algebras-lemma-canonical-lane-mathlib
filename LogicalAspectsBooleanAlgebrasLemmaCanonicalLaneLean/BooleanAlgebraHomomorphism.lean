@@ -1,29 +1,21 @@
 import canonicalLaneMathlib.AdmissibleClass
-import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraStructure
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraAxioms
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 
-structure BooleanAlgebraHomomorphism (α β : Type u) (A : BooleanAlgebra α) (B : BooleanAlgebra β) where
-  map : α → β
-  preserve_top : map A.top = B.top
-  preserve_bot : map A.bot = B.bot
-  preserve_comp : ∀ a : α, map (A.comp a) = B.comp (map a)
-  preserve_meet : ∀ a b : α, map (A.meet a b) = B.meet (map a) (map b)
-  preserve_join : ∀ a b : α, map (A.join a b) = B.join (map a) (map b)
+structure BooleanAlgebraHomomorphism (A B : BooleanAlgebraAxioms) where
+  map : A.carrier → B.carrier
+  top_preserved : map A.top = B.top
+  bot_preserved : map A.bot = B.bot
+  meet_preserved : ∀ a b : A.carrier, map (A.meet a b) = B.meet (map a) (map b)
+  join_preserved : ∀ a b : A.carrier, map (A.join a b) = B.join (map a) (map b)
+  complement_preserved : ∀ a : A.carrier, map (A.complement a) = B.complement (map a)
 
-structure BooleanAlgebraHomomorphismEvidence {α β : Type u} {A : BooleanAlgebra α} {B : BooleanAlgebra β} (H : BooleanAlgebraHomomorphism α β A B) where
-  preserve_top_closed : H.preserve_top
-  preserve_bot_closed : H.preserve_bot
-  preserve_comp_closed : H.preserve_comp
-  preserve_meet_closed : H.preserve_meet
-  preserve_join_closed : H.preserve_join
-
-def BooleanAlgebraHomomorphismClosed {α β : Type u} {A : BooleanAlgebra α} {B : BooleanAlgebra β} (H : BooleanAlgebraHomomorphism α β A B) : Prop :=
-  H.preserve_top ∧ H.preserve_bot ∧ H.preserve_comp ∧ H.preserve_meet ∧ H.preserve_join
-
-theorem boolean_algebra_homomorphism_closed_from_evidence {α β : Type u} {A : BooleanAlgebra α} {B : BooleanAlgebra β} (H : BooleanAlgebraHomomorphism α β A B) (E : BooleanAlgebraHomomorphismEvidence H) : BooleanAlgebraHomomorphismClosed H := by
-  exact And.intro E.preserve_top_closed (And.intro E.preserve_bot_closed (And.intro E.preserve_comp_closed (And.intro E.preserve_meet_closed E.preserve_join_closed)))
+def BooleanAlgebraHomomorphismClosed (h : BooleanAlgebraHomomorphism A B) : Prop :=
+  h.top_preserved ∧ h.bot_preserved ∧
+  (∀ a b, h.meet_preserved a b) ∧ (∀ a b, h.join_preserved a b) ∧
+  (∀ a, h.complement_preserved a)
 
 end LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 end HautevilleHouse
