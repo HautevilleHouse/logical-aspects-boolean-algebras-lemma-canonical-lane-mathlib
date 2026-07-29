@@ -1,32 +1,29 @@
 import canonicalLaneMathlib.AdmissibleClass
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraStructure
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 
-structure BooleanAlgebraHomomorphism (B C : BooleanAlgebraPackage) where
-  toFun : B.carrier → C.carrier
-  presTop : toFun B.top = C.top
-  presBot : toFun B.bot = C.bot
-  presMeet : ∀ a b : B.carrier, toFun (B.meet a b) = C.meet (toFun a) (toFun b)
-  presJoin : ∀ a b : B.carrier, toFun (B.join a b) = C.join (toFun a) (toFun b)
-  presComplement : ∀ a : B.carrier, toFun (B.complement a) = C.complement (toFun a)
+structure BooleanAlgebraHomomorphism (α β : Type u) (A : BooleanAlgebra α) (B : BooleanAlgebra β) where
+  map : α → β
+  preserve_top : map A.top = B.top
+  preserve_bot : map A.bot = B.bot
+  preserve_comp : ∀ a : α, map (A.comp a) = B.comp (map a)
+  preserve_meet : ∀ a b : α, map (A.meet a b) = B.meet (map a) (map b)
+  preserve_join : ∀ a b : α, map (A.join a b) = B.join (map a) (map b)
 
-structure HomomorphismEvidence (B C : BooleanAlgebraPackage) (f : BooleanAlgebraHomomorphism B C) where
-  presTopClosed : f.presTop
-  presBotClosed : f.presBot
-  presMeetClosed : f.presMeet
-  presJoinClosed : f.presJoin
-  presComplementClosed : f.presComplement
+structure BooleanAlgebraHomomorphismEvidence {α β : Type u} {A : BooleanAlgebra α} {B : BooleanAlgebra β} (H : BooleanAlgebraHomomorphism α β A B) where
+  preserve_top_closed : H.preserve_top
+  preserve_bot_closed : H.preserve_bot
+  preserve_comp_closed : H.preserve_comp
+  preserve_meet_closed : H.preserve_meet
+  preserve_join_closed : H.preserve_join
 
-def HomomorphismClosed (B C : BooleanAlgebraPackage) (f : BooleanAlgebraHomomorphism B C) : Prop :=
-  f.presTop ∧ f.presBot ∧ f.presMeet ∧ f.presJoin ∧ f.presComplement
+def BooleanAlgebraHomomorphismClosed {α β : Type u} {A : BooleanAlgebra α} {B : BooleanAlgebra β} (H : BooleanAlgebraHomomorphism α β A B) : Prop :=
+  H.preserve_top ∧ H.preserve_bot ∧ H.preserve_comp ∧ H.preserve_meet ∧ H.preserve_join
 
-theorem homomorphism_closed_from_evidence (B C : BooleanAlgebraPackage) (f : BooleanAlgebraHomomorphism B C)
-    (E : HomomorphismEvidence B C f) : HomomorphismClosed B C f := by
-  exact And.intro E.presTopClosed
-    (And.intro E.presBotClosed
-      (And.intro E.presMeetClosed
-        (And.intro E.presJoinClosed E.presComplementClosed)))
+theorem boolean_algebra_homomorphism_closed_from_evidence {α β : Type u} {A : BooleanAlgebra α} {B : BooleanAlgebra β} (H : BooleanAlgebraHomomorphism α β A B) (E : BooleanAlgebraHomomorphismEvidence H) : BooleanAlgebraHomomorphismClosed H := by
+  exact And.intro E.preserve_top_closed (And.intro E.preserve_bot_closed (And.intro E.preserve_comp_closed (And.intro E.preserve_meet_closed E.preserve_join_closed)))
 
 end LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 end HautevilleHouse

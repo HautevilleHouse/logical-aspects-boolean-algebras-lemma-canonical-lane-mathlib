@@ -1,20 +1,20 @@
 import canonicalLaneMathlib.AdmissibleClass
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraStructure
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraHomomorphisms
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.StoneRepresentation
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraFilterProperties
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraDuality
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraAtoms
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraCompletions
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraStructure
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraHomomorphism
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.StoneRepresentation
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraDuality
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraCompleteness
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.FilterUltrafilter
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 
-def ConstrainedBooleanClosure (A : AdmissibleClass) : Prop :=
+def ConstrainedBooleanAlgebraClosure (A : AdmissibleClass) : Prop :=
   bridgeClosed A ∧ gateClosed A
 
-theorem constrained_boolean_endgame (A : AdmissibleClass) : ConstrainedBooleanClosure A :=
-  And.intro (bridge_from_admissible_class A) (gate_from_admissible_class A)
+theorem constrained_boolean_algebra_endgame (A : AdmissibleClass) :
+    ConstrainedBooleanAlgebraClosure A := by
+  exact And.intro (bridge_from_admissible_class A) (gate_from_admissible_class A)
 
 end LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 end HautevilleHouse

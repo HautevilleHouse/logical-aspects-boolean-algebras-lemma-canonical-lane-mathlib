@@ -1,28 +1,31 @@
 import canonicalLaneMathlib.AdmissibleClass
-import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraStructure
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraStructure
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 
-structure StoneRepresentationPackage (B : BooleanAlgebraPackage) where
-  ultrafilters : Type u
-  topology : TopologicalSpace ultrafilters
-  isCompact : CompactSpace ultrafilters
-  isTotallyDisconnected : TotallyDisconnectedSpace ultrafilters
-  isT2 : T2Space ultrafilters
-  repMap : B.carrier → Set ultrafilters
-  repMap_inj : Function.Injective repMap
-  repMap_meet : ∀ a b : B.carrier, repMap (B.meet a b) = repMap a ∩ repMap b
-  repMap_join : ∀ a b : B.carrier, repMap (B.join a b) = repMap a ∪ repMap b
-  repMap_complement : ∀ a : B.carrier, repMap (B.complement a) = (repMap a)ᶜ
-  repMap_top : repMap B.top = Set.univ
-  repMap_bot : repMap B.bot = ∅
+structure StoneSpace where
+  carrier : Type u
+  topology : TopologicalSpace carrier
+  compact : CompactSpace carrier
+  hausdorff : T2Space carrier
+  totallyDisconnected : TotallyDisconnectedSpace carrier
 
-def StoneRepresentationClosed {B : BooleanAlgebraPackage} (S : StoneRepresentationPackage B) : Prop :=
-  S.repMap_inj ∧ S.repMap_meet ∧ S.repMap_join ∧ S.repMap_complement ∧ S.repMap_top ∧ S.repMap_bot
+structure StoneRepresentationPackage (α : Type u) (B : BooleanAlgebra α) where
+  space : StoneSpace
+  representation : BooleanAlgebraHomomorphism α (Set space.carrier) B (Set.stoneAlgebra space.carrier)
+  representationInjective : Function.Injective representation.map
+  representationSurjective : Function.Surjective representation.map
 
-theorem stone_representation_closed {B : BooleanAlgebraPackage} (S : StoneRepresentationPackage B) : StoneRepresentationClosed S :=
-  And.intro S.repMap_inj (And.intro S.repMap_meet (And.intro S.repMap_join (And.intro S.repMap_complement (And.intro S.repMap_top S.repMap_bot))))
+structure StoneRepresentationEvidence {α : Type u} {B : BooleanAlgebra α} (S : StoneRepresentationPackage α B) where
+  representationInjective_closed : S.representationInjective
+  representationSurjective_closed : S.representationSurjective
+
+def StoneRepresentationClosed {α : Type u} {B : BooleanAlgebra α} (S : StoneRepresentationPackage α B) : Prop :=
+  S.representationInjective ∧ S.representationSurjective
+
+theorem stone_representation_closed_from_evidence {α : Type u} {B : BooleanAlgebra α} (S : StoneRepresentationPackage α B) (E : StoneRepresentationEvidence S) : StoneRepresentationClosed S := by
+  exact And.intro E.representationInjective_closed E.representationSurjective_closed
 
 end LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 end HautevilleHouse
