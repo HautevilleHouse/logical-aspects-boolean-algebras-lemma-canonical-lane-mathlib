@@ -1,10 +1,11 @@
-import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.Projection
+import canonicalLaneMathlib.AdmissibleClass
+import LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraModels
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 
 def bridgeClosed (A : AdmissibleClass) : Prop :=
-  BooleanAlgebraWitnessClosed A.object
+  BooleanWitnessClosed A.object
 
 theorem bridge_from_admissible_class (A : AdmissibleClass) :
     bridgeClosed A := by
