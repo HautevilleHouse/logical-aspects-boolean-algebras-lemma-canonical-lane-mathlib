@@ -1,25 +1,28 @@
 import canonicalLaneMathlib.AdmissibleClass
+import HautevilleHouse.LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean.BooleanAlgebraStructure
 
 namespace HautevilleHouse
 namespace LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 
-structure AtomDefinition (B : BooleanAlgebraPackage) where
-  isAtom : B.carrier → Prop
-  atomDef : ∀ (a : B.carrier), isAtom a ↔ (a ≠ B.bot ∧ ∀ (b : B.carrier), B.meet a b = b ∨ B.meet a b = B.bot)
+structure AtomPackage (B : BooleanAlgebraPackage) where
+  atom : B.carrier
+  not_bot : atom ≠ B.bot
+  minimal : ∀ x : B.carrier, B.meet x atom ≠ B.bot → B.meet x atom = x
 
-structure AtomisticBooleanAlgebra (B : BooleanAlgebraPackage) (A : AtomDefinition B) where
-  generatedByAtoms : ∀ (x : B.carrier), x ≠ B.bot → ∃ (a : B.carrier), A.isAtom a ∧ B.meet a x = a
+def AtomClosed {B : BooleanAlgebraPackage} (A : AtomPackage B) : Prop :=
+  A.not_bot ∧ A.minimal
 
-structure AtomisticEvidence (B : BooleanAlgebraPackage) (A : AtomDefinition B) (At : AtomisticBooleanAlgebra B A) where
-  generatedByAtomsClosed : At.generatedByAtoms
+theorem atom_closed {B : BooleanAlgebraPackage} (A : AtomPackage B) : AtomClosed A :=
+  And.intro A.not_bot A.minimal
 
-def AtomisticClosed (B : BooleanAlgebraPackage) (A : AtomDefinition B) (At : AtomisticBooleanAlgebra B A) : Prop :=
-  At.generatedByAtoms
+structure AtomicBooleanAlgebraPackage (B : BooleanAlgebraPackage) where
+  atoms_exist : ∀ x : B.carrier, x ≠ B.bot → ∃ (A : AtomPackage B), B.meet A.atom x ≠ B.bot
 
-theorem atomistic_closed_from_evidence (B : BooleanAlgebraPackage) (A : AtomDefinition B)
-    (At : AtomisticBooleanAlgebra B A) (E : AtomisticEvidence B A At) :
-    AtomisticClosed B A At := by
-  exact E.generatedByAtomsClosed
+def AtomicBooleanAlgebraClosed {B : BooleanAlgebraPackage} (A : AtomicBooleanAlgebraPackage B) : Prop :=
+  A.atoms_exist
+
+theorem atomic_boolean_algebra_closed {B : BooleanAlgebraPackage} (A : AtomicBooleanAlgebraPackage B) : AtomicBooleanAlgebraClosed A :=
+  A.atoms_exist
 
 end LogicalAspectsBooleanAlgebrasLemmaCanonicalLaneLean
 end HautevilleHouse
